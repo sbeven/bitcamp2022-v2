@@ -80,7 +80,9 @@ mask_path = "Drawing.sketchpad.png"
 mask = cv2.imread(mask_path, cv2.IMREAD_UNCHANGED)
 colors = [(255, 255, 255)] * 17
 cap = cv2.VideoCapture(0)
+collision = False
 while cap.isOpened():
+    collision = False
     ret, frame = cap.read()
 
     # Reshape image
@@ -116,6 +118,7 @@ while cap.isOpened():
         if xpos < y and ypos < x:
             if mask[int(xpos), int(ypos), 3] > 0:
                 colors[i] = (255, 0, 0)
+                Collision = True;
             else:
                 colors[i] = (255, 255, 255)
     # Rendering
@@ -126,6 +129,8 @@ while cap.isOpened():
 
     cv2.imshow('MoveNet Lightning', frame)
     if cv2.waitKey(10) & 0xFF == ord('q'):
+        break
+    if cv2.getWindowProperty('MoveNet Lightning', cv2.WND_PROP_VISIBLE) < 1:
         break
 
 cap.release()

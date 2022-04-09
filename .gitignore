@@ -2,3 +2,4 @@
 *__pycache__*
 /web/core/garbage/*
 /web/hole/settings.py
+/venv/*
