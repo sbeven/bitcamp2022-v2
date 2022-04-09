@@ -6,7 +6,7 @@
 # In[ ]:
 
 
-
+# pip install tensorflow==2.4.1 tensorflow-gpu==2.4.1 opencv-python matplotlib
 
 # In[ ]:
 
@@ -15,6 +15,7 @@ import tensorflow as tf
 import numpy as np
 from matplotlib import pyplot as plt
 import cv2
+
 
 
 EDGES = {
@@ -79,34 +80,49 @@ interpreter.allocate_tensors()
 
 # In[ ]:
 
-
+mask_path = "Drawing.sketchpad.png"
+mask = cv2.imread(mask_path, cv2.IMREAD_UNCHANGED)
 cap = cv2.VideoCapture(0)
 while cap.isOpened():
     ret, frame = cap.read()
-    
+
     # Reshape image
     img = frame.copy()
-    img = tf.image.resize_with_pad(np.expand_dims(img, axis=0), 192,192)
+    img = tf.image.resize_with_pad(np.expand_dims(img, axis=0), 192, 192)
     input_image = tf.cast(img, dtype=tf.float32)
-    
-    # Setup input and output 
+    print(frame.shape)
+    # Setup input and output
     input_details = interpreter.get_input_details()
     output_details = interpreter.get_output_details()
-    
-    # Make predictions 
+
+    # Make predictions
     interpreter.set_tensor(input_details[0]['index'], np.array(input_image))
     interpreter.invoke()
     keypoints_with_scores = interpreter.get_tensor(output_details[0]['index'])
-    
-    # Rendering 
+
+    # resize and render mask
+
+    frame = cv2.resize(frame, dsize=(843, 640), interpolation=cv2.INTER_CUBIC)
+    mask = cv2.resize(mask, dsize=(843, 640), interpolation=cv2.INTER_CUBIC)
+
+    # change dtype of mask
+    mask = mask.astype('uint8')
+
+    frame = np.concatenate((frame, np.full((640, 843, 1), 255, dtype=np.uint8)), axis=2)
+
+    print(frame.shape)
+    print(mask.shape)
+    print(frame[:, :])
+    frame = cv2.addWeighted(frame, 1, mask, 0.5, 0)
+
+    # Rendering
     draw_connections(frame, keypoints_with_scores, EDGES, 0.4)
     draw_keypoints(frame, keypoints_with_scores, 0.4)
-    
+
     cv2.imshow('MoveNet Lightning', frame)
-    
-    if cv2.waitKey(10) & 0xFF==ord('q'):
+    if cv2.waitKey(10) & 0xFF == ord('q'):
         break
-        
+
 cap.release()
 cv2.destroyAllWindows()
 
