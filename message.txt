@@ -15,8 +15,10 @@ import tensorflow as tf
 import numpy as np
 from matplotlib import pyplot as plt
 import cv2
-
 import time
+
+# import os
+# os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
 EDGES = {
     (0, 1): 'm',
@@ -76,22 +78,30 @@ interpreter.allocate_tensors()
 
 # In[ ]:
 
-mask_path = "Drawing.sketchpad.png"
+paths = ["Mask1.png", 
+        "Mask2.png",
+        "Mask3.png",
+        "Mask4.png",
+        "Mask5.png"]
+
+mask_path = paths[0]
 mask = cv2.imread(mask_path, cv2.IMREAD_UNCHANGED)
 colors = [(255, 255, 255)] * 17
 cap = cv2.VideoCapture(0)
 collision = False
-
-rounds = 0
-score = 0
+# initialize timer
+fontface = cv2.FONT_HERSHEY_SIMPLEX
+fontscale = 2
+fontcolor = (255, 255, 255)
 fails = 0
-
-while (fails < 3):
+score = 0
+levels = 0
+while (fails < 5):
 
     start = time.time()
     finish = time.time()
 
-    while cap.isOpened() and finish - start < 5:
+    while finish - start < 5:
         collision = False
         ret, frame = cap.read()
 
@@ -119,6 +129,7 @@ while (fails < 3):
         frame = np.concatenate((frame, np.full((640, 843, 1), 255, dtype=np.uint8)), axis=2)
         frame = cv2.addWeighted(frame, 1, mask, 0.5, 0)
 
+
         y, x, c = frame.shape
         shaped = np.squeeze(np.multiply(keypoints_with_scores, [y, x, 1]))
         # collisions
@@ -127,7 +138,7 @@ while (fails < 3):
             ypos = shaped[i][1]
             if xpos < y and ypos < x:
                 if mask[int(xpos), int(ypos), 3] > 0:
-                    colors[i] = (255, 0, 0)
+                    colors[i] = (0, 255, 0)
                     collision = True
                 else:
                     colors[i] = (255, 255, 255)
@@ -136,49 +147,28 @@ while (fails < 3):
         draw_keypoints(frame, shaped, 0.4, colors)
 
         frame = cv2.flip(frame, 1)
-
+        #put the timer on the screen
+        frame = cv2.putText(frame, str(5 - int(finish - start)),(15, 50), fontface, fontscale, fontcolor, thickness = 3)
         cv2.imshow('MoveNet Lightning', frame)
         if cv2.waitKey(10) & 0xFF == ord('q'):
             break
-        if cv2.getWindowProperty('MoveNet Lightning', cv2.WND_PROP_VISIBLE) < 1:
-            break
-
+        # if cv2.getWindowProperty('MoveNet Lightning', cv2.WND_PROP_VISIBLE) < 1:
+        #     break
         finish = time.time()
-    
-    # Make predictions
-    interpreter.set_tensor(input_details[0]['index'], np.array(input_image))
-    interpreter.invoke()
-    keypoints_with_scores = interpreter.get_tensor(output_details[0]['index'])
-
-    y, x, c = frame.shape
-    shaped = np.squeeze(np.multiply(keypoints_with_scores, [y, x, 1]))
-    
-    collision = False
-    # collisions
-    for i in range(0, len(shaped)):
-        xpos = shaped[i][0]
-        ypos = shaped[i][1]
-        if xpos < y and ypos < x:
-            if mask[int(xpos), int(ypos), 3] > 0:
-                colors[i] = (255, 0, 0)
-                collision = True
-                break
-            else:
-                colors[i] = (255, 255, 255)
-    
     if collision:
         fails += 1
     else:
         score += 1
-    
-    rounds += 1
 
-    print(f'Rounds: {rounds}')
-    print(f'Score: {score}')
-    print(f'Fails: {fails}\n')
+    levels += 1
 
     if cv2.waitKey(10) & 0xFF == ord('q'):
         break
+    # if cv2.getWindowProperty('MoveNet Lightning', cv2.WND_PROP_VISIBLE) < 1:
+    #     break
+
+    mask_path = paths[levels % len(paths)]
+    mask = cv2.imread(mask_path, cv2.IMREAD_UNCHANGED)
 
 cap.release()
 cv2.destroyAllWindows()

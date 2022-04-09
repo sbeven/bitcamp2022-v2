@@ -16,6 +16,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 import cv2
 import time
+import random
 
 
 
@@ -77,24 +78,35 @@ interpreter.allocate_tensors()
 
 # In[ ]:
 
-mask_path = "mask1.sketchpad.png"
-mask = cv2.imread(mask_path, cv2.IMREAD_UNCHANGED)
+paths = ["Mask1.png",
+        "Mask2.png",
+        "Mask3.png",
+        "Mask4.png",
+        "Mask5.png"]
+
+videoWidth = 853
+videoHeight = 640
 colors = [(255, 255, 255)] * 17
 cap = cv2.VideoCapture(0)
 collision = False
 # initialize timer
 fontface = cv2.FONT_HERSHEY_SIMPLEX
 fontscale = 2
-fontcolor = (255, 255, 255)
+fontcolor = (0, 0, 0)
 fails = 0
 score = 0
 rounds = 0
-while (fails < 3):
+end = False
+skipEvent = False
+input
+while fails < 3 and not end:
 
     start = time.time()
     finish = time.time()
-
-    while finish - start < 5:
+    skipEvent = False
+    mask_path = paths[random.randint(0,len(paths) - 1)]
+    mask = cv2.imread(mask_path, cv2.IMREAD_UNCHANGED)
+    while finish - start < 5 and not end and not skipEvent:
         collision = False
         ret, frame = cap.read()
 
@@ -129,7 +141,8 @@ while (fails < 3):
         for i in range(0, len(shaped)):
             xpos = shaped[i][0]
             ypos = shaped[i][1]
-            if xpos < y and ypos < x:
+            confidence = shaped[i][2]
+            if xpos < y and ypos < x and confidence > 0.4:
                 if mask[int(xpos), int(ypos), 3] > 0:
                     colors[i] = (0, 255, 0)
                     collision = True;
@@ -141,27 +154,63 @@ while (fails < 3):
 
         frame = cv2.flip(frame, 1)
         #put the timer on the screen
-        frame = cv2.putText(frame, str(5 - int(finish - start)),(15, 50), fontface, fontscale, fontcolor, thickness = 3)
+        frame = cv2.putText(frame, str(5 - int(finish - start)), (15, 50), \
+                            fontface, fontscale, fontcolor, thickness=3)
         cv2.imshow('MoveNet Lightning', frame)
-        if cv2.waitKey(10) & 0xFF == ord('q'):
-            break
+        input = cv2.waitKey(10)
+        if input == ord('q'):
+            end = True
+        if input == ord('s'):
+            skipEvent = True
         if cv2.getWindowProperty('MoveNet Lightning', cv2.WND_PROP_VISIBLE) < 1:
-            break
+            end = True
         finish = time.time()
+    skipEvent = False
+    #display a fail/success screen
+    start = time.time()
+    finish = time.time()
     if collision:
         fails += 1
     else:
         score += 1
-
     rounds += 1
-
-    print(f'Rounds: {rounds}')
-    print(f'Score: {score}')
-    print(f'Fails: {fails}\n')
+    while finish - start < 3 and not end and not skipEvent:
+        if collision:
+            frame = cv2.rectangle(frame, (0, 0), (843, 640), (0, 0,255), thickness = -1)
+            frame = cv2.putText(frame, "Fail", (350, 340), fontface, fontscale, fontcolor, thickness=3)
+            frame = cv2.putText(frame, str(3 - int(finish - start)), (15, 50), \
+                                fontface, fontscale, fontcolor, thickness=3)
+        else:
+            frame = cv2.rectangle(frame, (0, 0), (843, 640), (0, 255, 0), thickness=-1)
+            frame = cv2.putText(frame, "Pass", (350, 340), fontface, fontscale, fontcolor, thickness=3)
+            frame = cv2.putText(frame, str(3 - int(finish - start)), (15, 50), \
+                                fontface, fontscale, fontcolor, thickness=3)
+        cv2.imshow('MoveNet Lightning', frame)
+        finish = time.time()
+        input = cv2.waitKey(10)
+        if input == ord('q'):
+            end = True
+        if input == ord('s'):
+            skipEvent = True
+        if cv2.getWindowProperty('MoveNet Lightning', cv2.WND_PROP_VISIBLE) < 1:
+            end = True
+# end screen
+while not end:
+    frame = cv2.rectangle(frame, (0, 0), (843, 640), (255, 255, 255), thickness=-1)
+    frame = cv2.putText(frame, "Rounds Survived: " + str(rounds), (140, 250), fontface, \
+                        fontscale, (0,0,0), thickness=3)
+    frame = cv2.putText(frame, "Score: " + str(score), (140, 300), fontface, \
+                        fontscale, (0,0,0), thickness=3)
+    frame = cv2.putText(frame, "Press q to quit", (140, 350), fontface, \
+                        fontscale, (0,0,0), thickness=3)
+    cv2.imshow('MoveNet Lightning', frame)
     if cv2.waitKey(10) & 0xFF == ord('q'):
-        break
+        end = True
     if cv2.getWindowProperty('MoveNet Lightning', cv2.WND_PROP_VISIBLE) < 1:
-        break
+        end = True
+
+
+cv2.imshow('MoveNet Lightning', frame)
 
 cap.release()
 cv2.destroyAllWindows()
