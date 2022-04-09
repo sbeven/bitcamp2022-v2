@@ -66,7 +66,14 @@ paths = ["Mask1.png",
         "Mask2.png",
         "Mask3.png",
         "Mask4.png",
-        "Mask5.png"]
+        "Mask5.png",
+        "Mask6.png",
+        "Mask7.png",
+        "Mask8.png",
+        "Mask9.png",
+        "Mask10.png",
+        "Mask11.png",
+        "Mask12.png"]
 name = "Hole in the Wall"
 videoWidth = 1000
 videoHeight = 750
