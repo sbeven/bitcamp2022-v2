@@ -51,16 +51,12 @@ def draw_connections(frame, keypoints, edges, confidence_threshold):
             cv2.line(frame, (int(x1), int(y1)), (int(x2), int(y2)), (0, 0, 255), 2)
 
 
-def draw_keypoints(frame, keypoints, confidence_threshold):
-    y, x, c = frame.shape
-    shaped = np.squeeze(np.multiply(keypoints, [y, x, 1]))
-
-    for kp in shaped:
-        ky, kx, kp_conf = kp
+def draw_keypoints(frame, shaped, confidence_threshold, colors):
+    for i in range(0, len(shaped)):
+        ky, kx, kp_conf = shaped[i]
         if kp_conf > confidence_threshold:
-            cv2.circle(frame, (int(kx), int(ky)), 4, (0, 255, 0), -1)
-
-        # # 4. Draw Edges
+            cv2.circle(frame, (int(kx), int(ky)), 4, colors[i], -1)
+            # # 4. Draw Edges
 
 
 # In[ ]:
@@ -82,6 +78,7 @@ interpreter.allocate_tensors()
 
 mask_path = "Drawing.sketchpad.png"
 mask = cv2.imread(mask_path, cv2.IMREAD_UNCHANGED)
+colors = [(255, 255, 255)] * 17
 cap = cv2.VideoCapture(0)
 while cap.isOpened():
     ret, frame = cap.read()
@@ -90,7 +87,6 @@ while cap.isOpened():
     img = frame.copy()
     img = tf.image.resize_with_pad(np.expand_dims(img, axis=0), 192, 192)
     input_image = tf.cast(img, dtype=tf.float32)
-    print(frame.shape)
     # Setup input and output
     input_details = interpreter.get_input_details()
     output_details = interpreter.get_output_details()
@@ -109,15 +105,24 @@ while cap.isOpened():
     mask = mask.astype('uint8')
 
     frame = np.concatenate((frame, np.full((640, 843, 1), 255, dtype=np.uint8)), axis=2)
-
-    print(frame.shape)
-    print(mask.shape)
-    print(frame[:, :])
     frame = cv2.addWeighted(frame, 1, mask, 0.5, 0)
 
+    y, x, c = frame.shape
+    shaped = np.squeeze(np.multiply(keypoints_with_scores, [y, x, 1]))
+    # collisions
+    for i in range(0, len(shaped)):
+        xpos = shaped[i][0]
+        ypos = shaped[i][1]
+        if xpos < y and ypos < x:
+            if mask[int(xpos), int(ypos), 3] > 0:
+                colors[i] = (255, 0, 0)
+            else:
+                colors[i] = (255, 255, 255)
     # Rendering
     draw_connections(frame, keypoints_with_scores, EDGES, 0.4)
-    draw_keypoints(frame, keypoints_with_scores, 0.4)
+    draw_keypoints(frame, shaped, 0.4, colors)
+
+    frame = cv2.flip(frame, 1)
 
     cv2.imshow('MoveNet Lightning', frame)
     if cv2.waitKey(10) & 0xFF == ord('q'):
