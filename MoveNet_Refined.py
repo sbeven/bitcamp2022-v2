@@ -178,6 +178,8 @@ while finish - start < 3 and not end and not skipEvent:
     if cv2.getWindowProperty(name, cv2.WND_PROP_VISIBLE) < 1:
         end = True
 
+random.shuffle(paths)
+used = []
 skipEvent = False
 # game start screen
 while fails < 3 and not end:
@@ -185,8 +187,9 @@ while fails < 3 and not end:
     start = time.time()
     finish = time.time()
     skipEvent = False
-    mask_path = paths[random.randint(0,len(paths) - 1)]
+    mask_path = paths.pop()
     mask = cv2.imread(mask_path, cv2.IMREAD_UNCHANGED)
+    used.append(mask_path)
 
     #game loop
     while finish - start < 5 and not end and not skipEvent:
@@ -291,6 +294,13 @@ while fails < 3 and not end:
             skipEvent = True
         if cv2.getWindowProperty(name, cv2.WND_PROP_VISIBLE) < 1:
             end = True
+    
+    # Recycle paths if all images used
+    if len(paths) == 0:
+        while len(used) > 0:
+            paths.append(used.pop())
+        random.shuffle(paths)
+    
 # end screen
 while not end:
     frame = cv2.rectangle(frame, (0, 0), (videoWidth, videoHeight), (255, 255, 255), thickness=-1)
