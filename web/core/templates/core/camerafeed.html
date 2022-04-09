@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<title>Display Webcam Stream</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<style>
+#container {
+	margin: 0px auto;
+	width: 500px;
+	height: 375px;
+	border: 10px #333 solid;
+}
+#videoElement {
+	width: 500px;
+	height: 375px;
+	background-color: #666;
+}
+
+.vid-container{
+    justify-content: space-evenly;
+    display: flex;
+}
+</style>
+</head>
+ 
+<body>
+<div class="vid-container">
+<div id="container" style="display:none">
+	<video autoplay="true" id="videoElement">
+	
+	</video>
+</div>
+
+</div>
+<canvas id="epic" width="640" height="480" style="display:none">
+        
+</canvas>
+<div class="vid-container">
+<div>
+  <img data="" id="myimg">
+</div>
+</div> 
+
+<script>
+var video = document.querySelector("#videoElement");
+var firstCall = 0;
+var toSave = 0;
+
+function update(){
+    var destinationCanvas = document.getElementById("epic");  
+    destinationCanvas.height = 375;
+    destinationCanvas.width = 500;
+    var context = destinationCanvas.getContext('2d');  
+    if (firstCall <= 4){
+        context.scale((500)/video.videoWidth, (375)/video.videoHeight);
+        firstCall += 1;
+    }
+    
+        
+        context.drawImage(video, 0, 0);  
+        console.log(video.videoWidth);
+
+        var imagebase64data = destinationCanvas.toDataURL("image/jpeg");
+
+        var xhttp = new XMLHttpRequest();
+        
+        xhttp.onreadystatechange = function() {
+          if (this.readyState == 4 && this.status == 200) {
+            console.log(this.responseText);
+            document.getElementById("myimg").src = JSON.parse(this.response)['imgData']
+
+          }
+        };
+        xhttp.open("POST", "{% url 'core:processImage' %}", true);
+        
+        xhttp.setRequestHeader("Content-type", "application/json; charset=utf-8");
+        xhttp.send('{ "imageData" : "' + imagebase64data + '" }');
+
+        // $.ajax({  
+        //     type: 'POST',  
+        //     url: "{% url 'core:processImage' %}",  
+        //     data: '{ "imageData" : "' + imagebase64data + '" }',  
+        //     contentType: 'application/json; charset=utf-8',  
+        //     dataType: 'text',  
+        //     success: function (out) {  
+        //         alert('Image uploaded successfully..');  
+        //     }  
+        // }); 
+        // //context.scale(video.videoWidth/500, video.videoHeight/375);
+}
+
+if (navigator.mediaDevices.getUserMedia) {
+  navigator.mediaDevices.getUserMedia({ video: true })
+    .then(function (stream) {
+      video.srcObject = stream;
+      
+      //var e = stream.getVideoTracks()
+      
+    })
+    .catch(function (err0r) {
+      console.log("Something went wrong!");
+    });
+}
+
+window.setInterval(update, 100);
+//window.setTimeout(update, 1500);
+</script>
+
+</body></html>
