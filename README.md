@@ -33,6 +33,8 @@ We learned how OpenCV draws pictures and how pictures are stored in numpy arrays
 If we were to expand on this project, here are some things we thought of adding:
 1. difficulty levels
 2. multiplayer
+3. leaderboard system
+4. keypoint target positions you have to hit
 
 # Credits
 Nicholas Renotte: https://www.youtube.com/watch?v=SSW9LzOJSus
