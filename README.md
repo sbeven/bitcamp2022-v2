@@ -1,7 +1,11 @@
-# Byte in the Wall with MoveNet
+## Byte in the Wall with MoveNet
 Steven Zhang, Patrick Gough, Alexander Tanimoto, Saatvik Vadlapatla
 
 A PC game based on the hit worldwide tv show series "Hole in the Wall". It uses the body position capture ML model MoveNet.
+## How to Run
+https://drive.google.com/file/d/1NyHcpkJPyMBwHK4AI63AgLL5BQw57mkV/view?usp=sharing
+download the portable folder with this link and extract it, then go into the final folder and open final.exe
+
 ## Inspiration
 We were inspired by "Hole in the Wall". In that game show, participants have to move their body into a certain position before a moving wall comes and knocks them down. While we can't have a giant moving wall like the game show, we liked the idea of a game where you have to move to a position before time runs out.
 
