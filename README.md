@@ -1,4 +1,4 @@
-# Hole in the Wall with MoveNet
+# Byte in the Wall with MoveNet
 Steven Zhang, Patrick Gough, Alexander Tanimoto, Saatvik Vadlapatla
 
 A PC game based on the hit worldwide tv show series "Hole in the Wall". It uses the body position capture ML model MoveNet.
@@ -17,4 +17,4 @@ s - skip section
 q- quit
 
 
-https://www.youtube.com/watch?v=SSW9LzOJSus
+Credits: https://www.youtube.com/watch?v=SSW9LzOJSus
