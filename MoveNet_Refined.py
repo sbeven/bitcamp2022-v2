@@ -1,7 +1,8 @@
 #import os
 #os.system("pip install tensorflow==2.4.1 tensorflow-gpu==2.4.1 opencv-python matplotlib")
 
-
+import os
+import sys
 import tensorflow as tf
 import numpy as np
 import cv2
@@ -9,7 +10,15 @@ import time
 import random
 
 
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
 
+    return os.path.join(base_path, relative_path)
 EDGES = {
     (0, 1): 'm',
     (0, 2): 'c',
@@ -52,21 +61,22 @@ def draw_keypoints(frame, shaped, confidence_threshold, colors):
 
 
 
-interpreter = tf.lite.Interpreter(model_path='masks+model/lite-model_movenet_singlepose_lightning_3.tflite')
+interpreter = tf.lite.Interpreter(model_path='lite-model_movenet_singlepose_lightning_3.tflite')
 interpreter.allocate_tensors()
 
 # initializations
-paths = ["./masks+model/Mask1.png",
-         "./masks+model/Mask2.png",
-         "./masks+model/Mask3.png",
-         "./masks+model/Mask4.png",
-         "./masks+model/Mask5.png",
-         "./masks+model/Mask6.png",
-         "./masks+model/Mask7.png",
-         "./masks+model/Mask8.png",
-         "./masks+model/Mask9.png",
-         "./masks+model/Mask10.png",
-         "./masks+model/Mask11.png",]
+paths = ["Mask1.png",
+         "Mask2.png",
+         "Mask3.png",
+         "Mask4.png",
+         "Mask5.png",
+         "Mask6.png",
+         "Mask7.png",
+         "Mask8.png",
+         "Mask9.png",
+         "Mask10.png",
+         "Mask11png",
+         ]
 name = "Bits in the Wall"
 videoWidth = 750
 videoHeight = 750
