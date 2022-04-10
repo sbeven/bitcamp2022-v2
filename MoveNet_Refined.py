@@ -12,8 +12,7 @@ import cv2
 import time
 import random
 
-import os
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+
 
 EDGES = {
     (0, 1): 'm',
@@ -175,8 +174,8 @@ while not end: # Repeat indefinitely as long not "q"
             cut = True
         if input == ord('r'):
             restart = True
-        # if cv2.getWindowProperty(name, cv2.WND_PROP_VISIBLE) < 1:
-        #     end = True
+        if cv2.getWindowProperty(name, cv2.WND_PROP_VISIBLE) < 1:
+            end = True
         finish = time.time()
         if finish - start > 3:
             skipEvent = True
@@ -200,8 +199,8 @@ while not end: # Repeat indefinitely as long not "q"
             cut = True
         if input == ord('r'):
             restart = True
-        # if cv2.getWindowProperty(name, cv2.WND_PROP_VISIBLE) < 1:
-        #     end = True
+        if cv2.getWindowProperty(name, cv2.WND_PROP_VISIBLE) < 1:
+            end = True
 
     random.shuffle(paths)
     used = []
@@ -282,8 +281,8 @@ while not end: # Repeat indefinitely as long not "q"
                 cut = True
             if input == ord('r'):
                 restart = True
-            # if cv2.getWindowProperty(name, cv2.WND_PROP_VISIBLE) < 1:
-            #     end = True
+            if cv2.getWindowProperty(name, cv2.WND_PROP_VISIBLE) < 1:
+                end = True
             finish = time.time()
         skipEvent = False
 
@@ -325,8 +324,8 @@ while not end: # Repeat indefinitely as long not "q"
                 cut = True
             if input == ord('r'):
                 restart = True
-            # if cv2.getWindowProperty(name, cv2.WND_PROP_VISIBLE) < 1:
-            #     end = True
+            if cv2.getWindowProperty(name, cv2.WND_PROP_VISIBLE) < 1:
+                end = True
         
         # Recycle paths if all images used
         if len(paths) == 0:
@@ -352,8 +351,8 @@ while not end: # Repeat indefinitely as long not "q"
             end = True
         if input == ord('r'):
             restart = True
-        # if cv2.getWindowProperty(name, cv2.WND_PROP_VISIBLE) < 1:
-        #     end = True
+        if cv2.getWindowProperty(name, cv2.WND_PROP_VISIBLE) < 1:
+            end = True
     
     if restart:
         while len(used) > 0:
