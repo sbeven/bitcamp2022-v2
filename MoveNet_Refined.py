@@ -69,12 +69,8 @@ paths = ["Mask1.png",
          "Mask8.png",
          "Mask9.png",
          "Mask10.png",
-         "Mask11.png",
-         "Mask12.png",
-         "Mask13.png",
-         "Mask14.png",
-         "Mask15.png"]
-name = "Hole in the Wall"
+         "Mask11.png",]
+name = "Bits in the Wall"
 videoWidth = 750
 videoHeight = 750
 colors = [(255, 255, 255)] * 17
@@ -132,7 +128,7 @@ while not end: # Repeat indefinitely as long not "q"
         mask = mask.astype('uint8')
 
         frame = np.concatenate((frame, np.full((videoHeight, videoWidth, 1), 255, dtype=np.uint8)), axis=2)
-        frame = cv2.addWeighted(frame, 1, mask, 0.5, 0)
+        frame = cv2.addWeighted(frame, 1, mask, 0.8, 0)
 
         y, x, c = frame.shape
         shaped = np.squeeze(np.multiply(keypoints_with_scores, [y, x, 1]))
@@ -215,7 +211,7 @@ while not end: # Repeat indefinitely as long not "q"
         used.append(mask_path)
 
         # game loop
-        while finish - start < random.randint(6, 8) and not end and not skipEvent and not cut and not restart:
+        while finish - start < 10 and not end and not skipEvent and not cut and not restart:
             collision = False
             ret, frame = cap.read()
             frame = frame[:, 80:560]
@@ -263,7 +259,7 @@ while not end: # Repeat indefinitely as long not "q"
 
             frame = cv2.flip(frame, 1)
             # put the timer on the screen
-            frame = cv2.putText(frame, str(5 - int(finish - start)), (15, 50), \
+            frame = cv2.putText(frame, str(10 - int(finish - start)), (15, 50), \
                                 fontface, fontscale, fontcolor, thickness=3)
             if collision:
                 # show collision circle
