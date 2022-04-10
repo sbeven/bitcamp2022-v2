@@ -1,12 +1,9 @@
-
-# pip install tensorflow==2.4.1 tensorflow-gpu==2.4.1 opencv-python matplotlib
-
-
+#import os
+#os.system("pip install tensorflow==2.4.1 tensorflow-gpu==2.4.1 opencv-python matplotlib")
 
 
 import tensorflow as tf
 import numpy as np
-from matplotlib import pyplot as plt
 import cv2
 import time
 import random
@@ -55,21 +52,21 @@ def draw_keypoints(frame, shaped, confidence_threshold, colors):
 
 
 
-interpreter = tf.lite.Interpreter(model_path='./masks + model/lite-model_movenet_singlepose_lightning_3.tflite')
+interpreter = tf.lite.Interpreter(model_path='masks+model/lite-model_movenet_singlepose_lightning_3.tflite')
 interpreter.allocate_tensors()
 
 # initializations
-paths = ["./masks + model/Mask1.png",
-         "./masks + model/Mask2.png",
-         "./masks + model/Mask3.png",
-         "./masks + model/Mask4.png",
-         "./masks + model/Mask5.png",
-         "./masks + model/Mask6.png",
-         "./masks + model/Mask7.png",
-         "./masks + model/Mask8.png",
-         "./masks + model/Mask9.png",
-         "./masks + model/Mask10.png",
-         "./masks + model/Mask11.png",]
+paths = ["./masks+model/Mask1.png",
+         "./masks+model/Mask2.png",
+         "./masks+model/Mask3.png",
+         "./masks+model/Mask4.png",
+         "./masks+model/Mask5.png",
+         "./masks+model/Mask6.png",
+         "./masks+model/Mask7.png",
+         "./masks+model/Mask8.png",
+         "./masks+model/Mask9.png",
+         "./masks+model/Mask10.png",
+         "./masks+model/Mask11.png",]
 name = "Bits in the Wall"
 videoWidth = 750
 videoHeight = 750
