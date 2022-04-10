@@ -16,5 +16,6 @@ important keys:
 s - skip section
 q- quit
 
-
-Credits: https://www.youtube.com/watch?v=SSW9LzOJSus
+# Credits
+Nicholas Renotte: https://www.youtube.com/watch?v=SSW9LzOJSus
+MoveNet: https://tfhub.dev/google/movenet/singlepose/lightning/4
