@@ -1,6 +1,9 @@
 ## Byte in the Wall with MoveNet
 Steven Zhang, Patrick Gough, Alexander Tanimoto, Saatvik Vadlapatla
 
+Submitted to BitCamp 2022, won Best Gamification Award
+
+
 A PC game based on the hit worldwide tv show series "Hole in the Wall". It uses the body position capture ML model MoveNet.
 ## How to Run
 https://drive.google.com/file/d/1NyHcpkJPyMBwHK4AI63AgLL5BQw57mkV/view?usp=sharing
