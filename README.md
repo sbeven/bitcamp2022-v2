@@ -1,4 +1,4 @@
-## Byte in the Wall with MoveNet
+## Bits in the Wall with MoveNet
 Steven Zhang, Patrick Gough, Alexander Tanimoto, Saatvik Vadlapatla
 
 Submitted to BitCamp 2022, won Best Gamification Award
